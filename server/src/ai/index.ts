@@ -1,24 +1,21 @@
-import { PineconeClient } from "@pinecone-database/pinecone";
+import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeStore } from "@langchain/pinecone";
-import { OpenAIEmbeddings } from "@langchain/openai";
-import { OpenAI } from "@langchain/openai";
+import { OpenAIEmbeddings, OpenAI } from "@langchain/openai";
 
 const llm = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY!,
 });
 
-const pinecone = new PineconeClient();
+const pinecone = new Pinecone({
+  apiKey: process.env.PINECONE_API_KEY!,
+});
 
 export async function initPinecone() {
-  await pinecone.init({
-    apiKey: process.env.PINECONE_API_KEY!,
-    environment: process.env.PINECONE_ENVIRONMENT!, // e.g., "us-east-1-aws"
-  });
-
   const indexName = process.env.PINECONE_INDEX_NAME!;
-  const existingIndexes = await pinecone.listIndexes();
+  const { indexes } = await pinecone.listIndexes();
 
-  if (!existingIndexes.includes(indexName)) {
+  const indexExists = Array.isArray(indexes) && indexes.some((idx) => idx.name === indexName);
+  if (!indexExists) {
     await pinecone.createIndex({
       name: indexName,
       dimension: 1536,
@@ -26,24 +23,19 @@ export async function initPinecone() {
       spec: {
         serverless: {
           cloud: "aws",
-          region: "us-east-1",
+          region: "us-east-1", // or your environment region
         },
       },
     });
-    await new Promise((res) => setTimeout(res, 60000));
+    await new Promise((res) => setTimeout(res, 60000)); // wait for index creation
   }
 }
 
 export async function getAIResponse(query: string) {
-  await pinecone.init({
-    apiKey: process.env.PINECONE_API_KEY!,
-    environment: process.env.PINECONE_ENVIRONMENT!,
-  });
-
   const index = pinecone.Index(process.env.PINECONE_INDEX_NAME!);
 
   const vectorStore = await PineconeStore.fromExistingIndex(
-    new OpenAIEmbeddings({ apiKey: process.env.OPENAI_API_KEY }),
+    new OpenAIEmbeddings({ apiKey: process.env.OPENAI_API_KEY! }),
     { pineconeIndex: index }
   );
 

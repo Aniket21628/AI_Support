@@ -10,6 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 /server/node_modules
+/client/node_modules
 # testing
 /coverage
 
@@ -39,3 +40,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Docker
+docker-compose.override.yml
+docker-compose.*.yml
+Dockerfile*
+.dockerignore
+
+# Docker volumes or temp files
+docker-volume/
+*.tar
+*.gz
+*.log
+
+# Optional: Ignore Docker build contexts or temp dirs
+/tmp/*
+/logs/*
