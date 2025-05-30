@@ -1,6 +1,5 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { Card, CardHeader, CardContent } from "../../../client/src/components/ui/card";
 import { trpc } from "../../lib/trpc";
 import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react";
 
@@ -10,18 +9,27 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto p-4">
-      <Card>
-        <CardHeader>Welcome, {session?.user?.name}</CardHeader>
-        <CardContent>
-          <h2>Your Tickets</h2>
-          {tickets?.map((ticket: { id: Key | null | undefined; title: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; status: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }) => (
-            <div key={ticket.id} className="p-2 border-b">
-              <p>{ticket.title}</p>
-              <p>Status: {ticket.status}</p>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="text-xl font-semibold mb-4">Welcome, {session?.user?.name}</div>
+        <div>
+          <h2 className="text-lg font-medium mb-2">Your Tickets</h2>
+          <div className="space-y-2">
+            {tickets?.map((ticket: {
+              id: Key | null | undefined;
+              title: ReactNode;
+              status: ReactNode;
+            }) => (
+              <div
+                key={ticket.id}
+                className="p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+              >
+                <p className="font-medium">{ticket.title}</p>
+                <p className="text-sm text-gray-600">Status: {ticket.status}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
