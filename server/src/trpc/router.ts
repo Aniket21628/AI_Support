@@ -22,7 +22,7 @@ export const appRouter = t.router({
           data: {
             title: input.title,
             description: input.description,
-            userId: ctx.user.id,
+            userId: Number(ctx.user.id),
           },
         });
 
@@ -36,7 +36,7 @@ export const appRouter = t.router({
         return ticket;
       }),
     getUserTickets: t.procedure.query(async ({ ctx }) => {
-      return prisma.ticket.findMany({ where: { userId: ctx.user.id } });
+      return prisma.ticket.findMany({ where: { userId: Number(ctx.user.id) } });
     }),
   }),
   chat: t.router({
@@ -47,7 +47,7 @@ export const appRouter = t.router({
           data: {
             title: "Escalated Chat",
             description: JSON.stringify(input.messages),
-            userId: ctx.user.id,
+            userId: Number(ctx.user.id),
             status: "ESCALATED",
           },
         });

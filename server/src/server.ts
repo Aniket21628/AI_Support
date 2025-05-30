@@ -5,6 +5,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { getAIResponse } from "./ai/index";
 import { prisma } from "../src/prisma"
+import { initPinecone } from "./ai/index";
 
 // Extend Express Request interface to include 'user'
 declare global {
@@ -35,6 +36,11 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3001, () => {
-  console.log("Server running on http://localhost:3001");
-});
+async function startServer() {
+  await initPinecone(); // Initialize Pinecone index
+  server.listen(3001, () => {
+    console.log("Server running on http://localhost:3001");
+  });
+}
+
+startServer();
