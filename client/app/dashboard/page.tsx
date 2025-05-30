@@ -5,7 +5,7 @@ import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from
 
 export default function Dashboard() {
   const { data: session } = useSession();
-  const { data: tickets } = trpc.ticket.getUserTickets.useQuery();
+  const { data: tickets } = trpc.tickets.getUserTickets.useQuery();
 
   return (
     <div className="container mx-auto p-4">

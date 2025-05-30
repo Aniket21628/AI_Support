@@ -7,7 +7,7 @@ import { trpc } from "../../lib/trpc";
 export default function TicketForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const createTicket = trpc.ticket.create.useMutation();
+  const createTicket = trpc.tickets.create.useMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

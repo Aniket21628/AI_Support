@@ -14,7 +14,7 @@ type Context = {
 const t = initTRPC.context<Context>().create();
 
 export const appRouter = t.router({
-  ticket: t.router({
+  tickets: t.router({
     create: t.procedure
       .input(z.object({ title: z.string(), description: z.string() }))
       .mutation(async ({ input, ctx }) => {
