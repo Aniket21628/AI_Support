@@ -6,14 +6,13 @@ import { getAIResponse } from "../ai/index";
 type Context = {
   user: {
     id: string;
-    // add other user properties if needed
   };
-  io: any; // type this properly if possible
+  io: any;
 };
 
 const t = initTRPC.context<Context>().create();
 
-export const appRouter = t.router({
+export const router = t.router({
   tickets: t.router({
     create: t.procedure
       .input(z.object({ title: z.string(), description: z.string() }))
@@ -26,7 +25,6 @@ export const appRouter = t.router({
           },
         });
 
-        // AI ticket analysis
         const aiSummary = await getAIResponse(`Summarize this ticket: ${input.description}`);
         await prisma.ticket.update({
           where: { id: ticket.id },
@@ -52,11 +50,10 @@ export const appRouter = t.router({
           },
         });
 
-        // Notify agents
         ctx.io.emit("new_escalation", { ticketId: ticket.id });
         return ticket;
       }),
   }),
 });
 
-export type AppRouter = typeof appRouter;
+export type AppRouter = typeof router;

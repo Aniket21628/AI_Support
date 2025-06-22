@@ -1,6 +1,6 @@
 import express from "express";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { appRouter } from "./trpc/router";
+import { router, type AppRouter } from "./trpc/router";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { getAIResponse } from "./ai/index";
@@ -24,8 +24,8 @@ app.use(express.json());
 app.use(
   "/trpc",
   createExpressMiddleware({
-    router: appRouter,
-    createContext: ({ req }) => ({ user: req.user, io }),
+    router,
+    createContext: ({ req }: { req: express.Request }) => ({ user: req.user, io }),
   })
 );
 
